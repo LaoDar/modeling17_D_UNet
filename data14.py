@@ -14,6 +14,8 @@ imgs_list = [glob.glob(img_dir+'input/*.jpg') for img_dir in img_dir_list]
 masks_list = [glob.glob(img_dir+'groundtruth/*.png') for img_dir in img_dir_list]
 
 num_imgs_list = [len(imgs) for imgs in imgs_list]
+range_list = [open(img_dir+'temporalROI.txt').next().split(' ') for img_dir in img_dir_list]
+
 print num_imgs_list
 
 print img_dir_list
@@ -21,7 +23,8 @@ print img_dir_list
 def train_iter(batch_sz=12,img_sz=64,frames=5):
     while True:
         dir_idx = np.random.randint(0,num_dirs,batch_sz)
-        idx_from = [np.random.randint(0, train_len-frames, 1)[0] for train_len in num_imgs_list]
+        #idx_from = [np.random.randint(0, train_len-frames, 1)[0] for train_len in num_imgs_list]
+        idx_from = [np.random.randint(int(str_range[0]),int(str_range[1]-frames),1)[0] for str_range in range_list]
         img_seqs = []
         mask_seqs = []
 
@@ -48,3 +51,4 @@ for batch,label in train_iter():
     cv2.waitKey(300)
     print batch.shape,np.max(batch)#,np.min(batch)
 '''
+#Mask: (0,static),(50,shadow),(85,Non-ROI),(170,Unknown),(255,Moving)
