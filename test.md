@@ -1,3 +1,3 @@
-Graph LR
+'''Graph LR
   A-->B
-  
+'''
